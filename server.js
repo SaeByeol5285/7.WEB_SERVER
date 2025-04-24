@@ -2,6 +2,10 @@
 const express = require('express');
 const productRouter = require('./routes/product'); //라우터 참조, 확장자 js만 생략 가능
 const userRouter = require('./routes/user');
+const loginRouter = require('./routes/login');
+const studentRouter = require('./routes/student');
+
+
 const path = require('path');
 const cors = require('cors');
 const session = require('express-session');
@@ -28,7 +32,10 @@ app.use(session({
 // product~주소로 들어갈 수 있음
 // 대신 product.js /product/list에서 /product생략 가능함
 app.use("/product", productRouter);
-app.use("/user", userRouter)
+app.use("/user", userRouter);
+app.use("/login", loginRouter);
+app.use("/student", studentRouter);
+
 
 
 // ==========================================================

@@ -2,6 +2,7 @@
 const express = require('express');
 const db = require('../db');
 const router = express.Router();
+const authMiddleware = require('./auth');
 
 const multer  = require('multer');
 // 3. 설정 - 파일 경로 및 파일 명(시간)
@@ -100,8 +101,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-
-router.delete("/:productId", async (req, res) => {
+//authMiddleware => 콜백함수 실행하기 전에 정당한 사용자인지 확인하는 절차
+router.delete("/:productId", authMiddleware, async (req, res) => {
     let { productId } = req.params;
 
     try {
