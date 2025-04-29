@@ -14,31 +14,46 @@ const upload = multer({ storage });
 
 // ==========================================================
 
+// router.get("/", async (req, res) => {
+//     console.log(req.query)
+//     // 선생님 방법
+//     // let { offset, pageSize } = req.query;
+
+//     let offset = req.query.offset;
+//     let pageSize = req.query.pageSize;
+
+//     // console.log("page ===> " + offset);
+//     // console.log("pageSize ====> " + pageSize);
+
+//     try {
+//         // 선생님 방법
+//         // let sql = "SELECT * FROM TBL_PRODUCT LIMIT ? OFFSET ?";
+//         // let [list] = await db.query(sql, [parseInt(pageSize), parseInt(offset)])
+
+//         // 아래의 경우, 문자열이더라도 숫자 형식으로 넣는 형태
+//         // 만약 문자열을 넣고 싶으면 "'" + pageSize + "'"
+//         let [list] = await db.query("SELECT * FROM TBL_PRODUCT LIMIT " + pageSize + " OFFSET " + offset);
+//         let [count] = await db.query("SELECT COUNT(*) AS cnt FROM TBL_PRODUCT")
+
+//         res.json({
+//             message: "result",
+//             list: list,
+//             count: count[0].cnt
+//         });
+
+//     } catch (err) {
+//         console.log("에러 발생");
+//         res.status(500).send("Server Error");
+//     }
+// })
+
 router.get("/", async (req, res) => {
-    console.log(req.query)
-    // 선생님 방법
-    // let { offset, pageSize } = req.query;
-
-    let offset = req.query.offset;
-    let pageSize = req.query.pageSize;
-
-    // console.log("page ===> " + offset);
-    // console.log("pageSize ====> " + pageSize);
-
     try {
-        // 선생님 방법
-        // let sql = "SELECT * FROM TBL_PRODUCT LIMIT ? OFFSET ?";
-        // let [list] = await db.query(sql, [parseInt(pageSize), parseInt(offset)])
-
-        // 아래의 경우, 문자열이더라도 숫자 형식으로 넣는 형태
-        // 만약 문자열을 넣고 싶으면 "'" + pageSize + "'"
-        let [list] = await db.query("SELECT * FROM TBL_PRODUCT LIMIT " + pageSize + " OFFSET " + offset);
-        let [count] = await db.query("SELECT COUNT(*) AS cnt FROM TBL_PRODUCT")
+        let [list] = await db.query("SELECT * FROM TBL_PRODUCT");
 
         res.json({
             message: "result",
-            list: list,
-            count: count[0].cnt
+            list: list
         });
 
     } catch (err) {
