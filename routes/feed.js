@@ -1,15 +1,38 @@
 const express = require('express');
 const db = require('../db');
 const router = express.Router();
+const authMiddleware = require('./auth');
+
+const multer  = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+const upload = multer({ storage });
+
 
 //api
 router.get("/", async (req, res) => {
+    let { userId } = req.query;
+    console.log(userId);
+
     try {
-        let [list] = await db.query("SELECT * FROM TBL_FEED");
+        let query = "SELECT * FROM TBL_FEED"
+        let imgQuery = "SELECT * FROM TBL_FEED F INNER JOIN TBL_FEED_IMG I ON F.ID = I.FEEDID"
+
+        if(userId){
+            query += " WHERE userId = '" + userId + "'"
+            imgQuery += " WHERE userId = '" + userId + "'"
+        }
+
+        let [list] = await db.query(query);
+        let [imgList] = await db.query(imgQuery);
+
 
         res.json({
             message: "result",
-            list: list
+            list: list, 
+            imgList : imgList
         });
 
     } catch (err) {
@@ -18,7 +41,7 @@ router.get("/", async (req, res) => {
     }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
     let { id } = req.params;
 
     try {
@@ -53,6 +76,32 @@ router.post("/", async (req, res) => {
     }
 }) 
 
+router.post('/upload', upload.array('file'), async (req, res) => {
+    let { feedId } = req.body;
+    const files = req.files; // 단일파일은 req.file 복수파일을 req.files로 자동으로 바뀜
+
+    // const filename = req.file.filename; 
+    // const destination = req.file.destination; 
+    try{
+        let results = []; 
+        for(let file of files){
+            let filename = file.filename;
+            let destination = file.destination;
+            let query = "INSERT INTO TBL_FEED_IMG VALUES(NULL, ?, ?, ?)";
+            let result = await db.query(query, [feedId, filename, destination]);
+            results.push(result);
+        }
+    
+        res.json({
+            message : "result",
+            result : results
+        });
+    } catch(err){
+        console.log("에러 발생!");
+        res.status(500).send("Server Error");
+    }
+});
+
 
 router.get("/:id", async (req, res) => {
     let { id } = req.params;
@@ -76,8 +125,8 @@ router.put("/:id", async (req, res) => {
     // req.body
     let { id } = req.params;
     let { content } = req.body;
-    console.log("id ==>" , id);
-    console.log("content ==>" , content);
+    // console.log("id ==>" , id);
+    // console.log("content ==>" , content);
 
     try {
         let query = "UPDATE TBL_FEED SET content = ? WHERE id= " + id;

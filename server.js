@@ -19,6 +19,7 @@ app.use(cors({
     origin: "http://localhost:3000",
     credentials: true //위 도메인에 한해서 쿠키를 주고 받을게(default는 주고 받지 못함)
 }))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(session({
     secret: 'keyboard cat', //암호화키
     resave: false,
