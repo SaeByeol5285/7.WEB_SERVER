@@ -4,7 +4,9 @@ const productRouter = require('./routes/product'); //라우터 참조, 확장자
 const userRouter = require('./routes/user');
 const loginRouter = require('./routes/login');
 const studentRouter = require('./routes/student');
-const feedRouter = require('./routes/feed')
+const feedRouter = require('./routes/feed');
+const memberRouter = require('./routes/sns/member');
+const snsFeed = require('./routes/sns/feed');
 
 
 const path = require('path');
@@ -38,6 +40,9 @@ app.use("/user", userRouter);
 app.use("/login", loginRouter);
 app.use("/student", studentRouter);
 app.use("/feed", feedRouter);
+app.use("/member", memberRouter);
+app.use("/sns-feed", snsFeed);
+
 
 
 
